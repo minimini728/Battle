@@ -5,9 +5,8 @@ using System.Linq;
 
 public class Character: MonoBehaviour
 {   
-    [SerializeField]
-    public IElement element; //¼Ó¼º
-    public IElement target; //»ó´ë ¼Ó¼º
+    public IElement element; //ì†ì„±
+    public IElement target; //ìƒëŒ€ ì†ì„±
 
     public int id;
     public int hp;
@@ -27,16 +26,16 @@ public class Character: MonoBehaviour
 
     public void Punch()
     {
-        Debug.LogFormat("{0}: ÆİÄ¡", this.id);
+        Debug.LogFormat("{0}: í€ì¹˜", this.id);
 
     }
     public void SkillEffect(int euler)
     {
 
-        if (this.transform.childCount == 0) //ÀÌÆåÆ®°¡ ¾øÀ¸¸é
+        if (this.transform.childCount == 0) //ì´í™íŠ¸ê°€ ì—†ìœ¼ë©´
         {
-            this.CreateEffect(); //ÀÌÆåÆ® »ı¼º
-            if(euler == 1) //enemy´Â ÀÌÆåÆ® z°ª ¹İÀü
+            this.CreateEffect(); //ì´í™íŠ¸ ìƒì„±
+            if(euler == 1) //enemyëŠ” ì´í™íŠ¸ zê°’ ë°˜ì „
             {
                 Vector3 localPosition = this.effectGo.transform.localPosition;
                 localPosition.z *= -1;
@@ -47,7 +46,7 @@ public class Character: MonoBehaviour
             var rendererModule = this.effectGo.GetComponent<ParticleSystemRenderer>();
             rendererModule.flip = new Vector3(euler, 0, 0);
 
-            //particlesystem ¼³Á¤
+            //particlesystem ì„¤ì •
             var particle = this.effectGo.GetComponent<ParticleSystem>();
             particle.playOnAwake = false;
             particle.loop = false;
@@ -55,13 +54,13 @@ public class Character: MonoBehaviour
 
             this.effectSkill = particle;
         }
-        else //ÀÌ¹Ì ÀÌÆåÆ®°¡ ÀÖÀ¸¸é
+        else //ì´ë¯¸ ì´í™íŠ¸ê°€ ìˆìœ¼ë©´
         {
             this.effectSkill.Play();
         }
 
     }
-    public void CreateEffect() //¼Ó¼ºº° ÀÌÆåÆ® »ı¼º
+    public void CreateEffect() //ì†ì„±ë³„ ì´í™íŠ¸ ìƒì„±
     {
         GameObject effect = null;
 
@@ -88,48 +87,48 @@ public class Character: MonoBehaviour
         }
     }
 
-    public int CalculateDamage(IElement target) //½ºÅ³ »ó¼º µ¥ÀÌÁö °è»ê
+    public int CalculateDamage(IElement target) //ìŠ¤í‚¬ ìƒì„± ë°ì´ì§€ ê³„ì‚°
     {
         this.target = target;
         return element.CalculateDamage(this.target);
     }
-    public void AssignTarget(IElement target) //»ó´ë ¼Ó¼º ÁöÁ¤
+    public void AssignTarget(IElement target) //ìƒëŒ€ ì†ì„± ì§€ì •
     {
         this.target = target;
     }
     public void ApplySkillButton(IElement target)
     {
-        //½ºÅ³ ¹öÆ° ÃÊ±âÈ­ ÀÌº¥Æ® Àü¼Û -> UISkillButton Å¬·¡½º·Î
+        //ìŠ¤í‚¬ ë²„íŠ¼ ì´ˆê¸°í™” ì´ë²¤íŠ¸ ì „ì†¡ -> UISkillButton í´ë˜ìŠ¤ë¡œ
         Debug.Log(this.target);
         EventDispatcher.instance.SendEvent<int>((int)EventEnum.eEventType.SkillButtonInit, element.SkillButtonInit(target));
         
     }
     public void Hit(int damage)
     {
-        Debug.LogFormat("{0}: ÇÇÇØ", this.id);
+        Debug.LogFormat("{0}: í”¼í•´", this.id);
 
-        var txt = ObjectPoolManager.GetObject(); //¿ÀºêÁ§Æ® Ç®¿¡¼­ µ¥¹ÌÁö ÅØ½ºÆ® °¡Á®¿À±â
+        var txt = ObjectPoolManager.GetObject(); //ì˜¤ë¸Œì íŠ¸ í’€ì—ì„œ ë°ë¯¸ì§€ í…ìŠ¤íŠ¸ ê°€ì ¸ì˜¤ê¸°
         Vector3 pos = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
-        txt.Init(pos, damage); //µ¥¹ÌÁö ÅØ½ºÆ® À§Ä¡, ±ÛÀÚ ÃÊ±âÈ­
+        txt.Init(pos, damage); //ë°ë¯¸ì§€ í…ìŠ¤íŠ¸ ìœ„ì¹˜, ê¸€ì ì´ˆê¸°í™”
 
-        StartCoroutine(this.PlayAnim()); //ÇÇÇØ ¾Ö´Ï¸ŞÀÌ¼Ç
+        StartCoroutine(this.PlayAnim()); //í”¼í•´ ì• ë‹ˆë©”ì´ì…˜
 
     }
-    IEnumerator PlayAnim() //ÇÇÇØ ¾Ö´Ï¸ŞÀÌ¼Ç
+    IEnumerator PlayAnim() //í”¼í•´ ì• ë‹ˆë©”ì´ì…˜
     {
         if (!gameObject.activeSelf)
         {
-            gameObject.SetActive(true); //°ÔÀÓ ¿ÀºêÁ§Æ® È°¼ºÈ­
+            gameObject.SetActive(true); //ê²Œì„ ì˜¤ë¸Œì íŠ¸ í™œì„±í™”
         }
 
         this.anim.SetInteger("State", 1);
 
-        yield return new WaitForSeconds(0.9f); //0.9ÃÊ ´ë±â
+        yield return new WaitForSeconds(0.9f); //0.9ì´ˆ ëŒ€ê¸°
 
         this.anim.SetInteger("State", 0);
 
     }
-    public int SkillUIArrow(int id, int enemyId) //Ä³¸¯ÅÍ º¯°æ UI ½ºÅ³ »ó¼º È­»ìÇ¥
+    public int SkillUIArrow(int id, int enemyId) //ìºë¦­í„° ë³€ê²½ UI ìŠ¤í‚¬ ìƒì„± í™”ì‚´í‘œ
     {
         IElement element = null;
         int num = 0;
